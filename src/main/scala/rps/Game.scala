@@ -22,25 +22,22 @@ object Game {
   }
 
   def getMoveName(move: Move.Move): String = move match {
-    case (Move.Rock)    => "Rock"
-    case (Move.Paper)   => "Paper"
-    case (Move.Scissor) => "Scissor"
+    case Move.Rock    => "Rock"
+    case Move.Paper   => "Paper"
+    case Move.Scissor => "Scissor"
   }
 
-  def getGameResult(a: Move.Move, b: Move.Move): Result.Result = {
-    if (a == b) {
-      Result.Tie
-    } else
-      (a, b) match {
-        case (Move.Rock, Move.Paper)    => Result.Won
-        case (Move.Paper, Move.Scissor) => Result.Won
-        case (Move.Scissor, Move.Rock)  => Result.Won
-        case _                          => Result.Lost
-      }
-  }
+  def getGameResult(a: Move.Move, b: Move.Move): Result.Result =
+    (a, b) match {
+      case (a, b) if a == b => Result.Tie
+      case (Move.Rock, Move.Paper) | (Move.Paper, Move.Scissor) |
+          (Move.Scissor, Move.Rock) =>
+        Result.Won
+      case _ => Result.Lost
+    }
 
   def play(): Unit = {
-    println("make your move (0 for Rock, 1 for Paper, 2 for Scissor):")
+    println("make your move (0 for Rock, 1 for Paper, 2 for Scissors):")
 
     val userMove = scala.io.StdIn.readLine()
 
