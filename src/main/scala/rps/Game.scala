@@ -1,57 +1,52 @@
 package rps
 
-object Move extends Enumeration {
-  type Move = Value
-  val Rock = Value("0")
-  val Paper = Value("1")
-  val Scissor = Value("2")
+import scala.util.Random
 
-  def isOrderType(s: String) = values.exists(_.toString == s)
+object Moves {
+  sealed class Move(val id: String, val name: String)
+
+  case object Rock extends Move("0", "Rock")
+  case object Paper extends Move("1", "Paper")
+  case object Scissors extends Move("2", "Scissors")
+
+  val moves: Set[Move] = Set(Rock, Paper, Scissors)
 }
 
-object Result extends Enumeration {
-  type Result = Value
-  val Won = Value("you won!")
-  val Lost = Value("you lost...")
-  val Tie = Value("it's a tie!")
+object Results {
+  sealed class Result(val message: String)
+
+  case object Won extends Result("you won!")
+  case object Lost extends Result("you lost...")
+  case object Tie extends Result("it's a tie!")
 }
 
 object Game {
-  def getRandomMove(): Move.Move = {
-    Move(scala.util.Random.nextInt(Move.maxId))
-  }
+  import Moves._, Results._
 
-  def getMoveName(move: Move.Move): String = move match {
-    case Move.Rock    => "Rock"
-    case Move.Paper   => "Paper"
-    case Move.Scissor => "Scissor"
-  }
-
-  def getGameResult(a: Move.Move, b: Move.Move): Result.Result =
+  def getGameResult(a: Move, b: Move): Result =
     (a, b) match {
-      case (a, b) if a == b => Result.Tie
-      case (Move.Rock, Move.Paper) | (Move.Paper, Move.Scissor) |
-          (Move.Scissor, Move.Rock) =>
-        Result.Won
-      case _ => Result.Lost
+      case (a, b) if a == b => Tie
+      case (Rock, Paper) | (Paper, Scissors) | (Scissors, Rock) =>
+        Won
+      case _ => Lost
     }
 
   def play(): Unit = {
     println("make your move (0 for Rock, 1 for Paper, 2 for Scissors):")
 
-    val userMove = scala.io.StdIn.readLine()
+    val userInput = scala.io.StdIn.readLine()
 
-    Move.isOrderType(userMove) match {
-      case true => {
-        val userMoveName = getMoveName(Move.withName(userMove))
-        val ourMove = getRandomMove()
-        val ourMoveName = getMoveName(ourMove)
+    val maybeUserMove = moves.find(move => move.id == userInput)
 
-        println(s"you played $userMoveName")
-        println(s"we played $ourMoveName")
-        println(getGameResult(ourMove, Move.withName(userMove)))
+    maybeUserMove match {
+      case Some(userMove) => {
+        val ourMove = Random.shuffle(moves).head
+
+        println(s"you played ${userMove.name}")
+        println(s"we played ${ourMove.name}")
+        println(getGameResult(ourMove, userMove).message)
       }
-      case false =>
+      case None =>
         println("this move is not allowed. Allowed moves are 0, 1, 2")
     }
   }
