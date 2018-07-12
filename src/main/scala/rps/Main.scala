@@ -11,7 +11,7 @@ import io.circe.generic.auto._
 import io.buildo.enumero.circe._
 
 import Game._
-import model.{Move, Result}
+import model.{Move, Result, RequestBody}
 import Result._
 
 object Main extends App {
@@ -22,12 +22,12 @@ object Main extends App {
   val route =
     post {
       path("playGame") {
-        entity(as[Object]) { body =>
-          play(body.userMove)
-          complete("good")
+        entity(as[RequestBody]) { body =>
+          val response = play(body.userMove)
+          complete(response)
         }
       }
-    }
+    } ~ options(complete())
 
   val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
 
