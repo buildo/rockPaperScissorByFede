@@ -1,3 +1,3 @@
 package rps.model
 
-case class RequestBody(userMove: String)
+case class RequestBody(computerMove: String)

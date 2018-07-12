@@ -7,7 +7,7 @@ import Move._, Result._, MoveHelpers._
 import io.buildo.enumero.annotations.enum
 
 object Game {
-  def getGameResult(a: Move)(b: Move): Result =
+  def getGameResult(a: Move, b: Move): Result =
     (a, b) match {
       case (a, b) if a == b => Tie
       case (Rock, Paper) | (Paper, Scissors) | (Scissors, Rock) =>
@@ -17,11 +17,11 @@ object Game {
 
   def play(userInput: String): ResponseBody = {
     userInput.convertToMove match {
-      case Some(userMove: Move) => {
+      case Some(computerMove: Move) => {
         val ourMove = Random.shuffle(List(Rock, Paper, Scissors)).head
-        val result = getGameResult(ourMove)(userMove)
+        val result = getGameResult(ourMove, computerMove)
 
-        ResponseBody(Some(result), Some(userMove), Some(ourMove), None)
+        ResponseBody(Some(result), Some(computerMove), Some(ourMove), None)
       }
       case None => {
         ResponseBody(

@@ -23,7 +23,7 @@ object Main extends App {
     post {
       path("playGame") {
         entity(as[RequestBody]) { body =>
-          val response = play(body.userMove)
+          val response = play(body.computerMove)
           complete(response)
         }
       }
