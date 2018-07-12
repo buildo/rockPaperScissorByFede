@@ -1,10 +1,9 @@
 package rps
 
 import scala.util.Random
-import io.buildo.enumero.{CaseEnumIndex, CaseEnumSerialization}
 
-import model.{Move, Result}
-import Move._, Result._
+import model._
+import Move._, Result._, MoveHelpers._
 
 object Game {
   def getGameResult(a: Move)(b: Move): Result =
@@ -24,18 +23,14 @@ object Game {
   def play(): Unit = {
     println("make your move (0 for Rock, 1 for Paper, 2 for Scissors):")
 
-    val userInput = scala.io.StdIn.readLine()
+    val userInput = scala.io.StdIn.readLine().convertToMove
 
-    CaseEnumIndex[Move].caseFromIndex(userInput) match {
+    userInput match {
       case Some(userMove: Move) => {
-        val ourMove = CaseEnumIndex[Move]
-          .caseFromIndex(Random.shuffle(List("0", "1", "2")).head)
-          .get
+        val ourMove = Random.shuffle(List(Rock, Paper, Scissors)).head
 
-        println(
-          s"you played ${CaseEnumSerialization[Move].caseToString(userMove)}")
-        println(
-          s"we played ${CaseEnumSerialization[Move].caseToString(ourMove)}")
+        println(s"you played ${userMove.convertToString}")
+        println(s"we played ${ourMove.convertToString}")
 
         val result = getGameResult(ourMove)(userMove)
 
