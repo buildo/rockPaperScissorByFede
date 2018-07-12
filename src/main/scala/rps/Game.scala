@@ -27,9 +27,9 @@ object Game {
         println(s"you played ${Move.getName(userMove)}")
         println(s"we played ${Move.getName(ourMove)}")
 
-        val getFinalResult = Result.getMessage _ compose getGameResult(ourMove)
+        val result = getGameResult(ourMove)(userMove)
 
-        println(getFinalResult(userMove))
+        println(Result.getMessage(result))
       }
       case None =>
         println("this move is not allowed. Allowed moves are 0, 1, 2")
