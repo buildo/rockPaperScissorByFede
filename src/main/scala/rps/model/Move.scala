@@ -1,22 +1,25 @@
 package rps.model
 
-sealed trait Move
-object Move {
-  case object Rock extends Move
-  case object Paper extends Move
-  case object Scissors extends Move
+import io.buildo.enumero.annotations.indexedEnum
+import io.buildo.enumero.{CaseEnumIndex, CaseEnumSerialization}
 
-  val moves = Set(Rock, Paper, Scissors)
+@indexedEnum trait Move {
+  type Index = String
+  Rock { "0" }
+  Paper { "1" }
+  Scissors { "2" }
+}
 
-  def getId(move: Move) = move match {
-    case Rock     => "0"
-    case Paper    => "1"
-    case Scissors => "2"
+object MoveHelpers {
+  implicit class ConversionHelper(x: String) {
+    def convertToMove(): Option[Move] = {
+      CaseEnumIndex[Move].caseFromIndex(x)
+    }
   }
 
-  def getName(move: Move) = move match {
-    case Rock     => "Rock"
-    case Paper    => "Paper"
-    case Scissors => "Scissors"
+  implicit class ReverseConversionHelper(x: Move) {
+    def convertToString(): String = {
+      CaseEnumSerialization[Move].caseToString(x)
+    }
   }
 }

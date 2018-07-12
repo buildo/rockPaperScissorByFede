@@ -1,8 +1,9 @@
 package rps
 
 import scala.util.Random
-import model.{Move, Result}
-import Move._, Result._
+
+import model._
+import Move._, Result._, MoveHelpers._
 
 object Game {
   def getGameResult(a: Move)(b: Move): Result =
@@ -13,23 +14,27 @@ object Game {
       case _ => Lost
     }
 
+  def writeResult(result: Result) = result match {
+    case Won  => "you won!"
+    case Lost => "you lost..."
+    case Tie  => "It's a tie!"
+  }
+
   def play(): Unit = {
     println("make your move (0 for Rock, 1 for Paper, 2 for Scissors):")
 
-    val userInput = scala.io.StdIn.readLine()
+    val userInput = scala.io.StdIn.readLine().convertToMove
 
-    val maybeUserMove = Move.moves.find(move => Move.getId(move) == userInput)
-
-    maybeUserMove match {
+    userInput match {
       case Some(userMove: Move) => {
-        val ourMove = Random.shuffle(Move.moves).head
+        val ourMove = Random.shuffle(List(Rock, Paper, Scissors)).head
 
-        println(s"you played ${Move.getName(userMove)}")
-        println(s"we played ${Move.getName(ourMove)}")
+        println(s"you played ${userMove.convertToString}")
+        println(s"we played ${ourMove.convertToString}")
 
         val result = getGameResult(ourMove)(userMove)
 
-        println(Result.getMessage(result))
+        println(writeResult(result))
       }
       case None =>
         println("this move is not allowed. Allowed moves are 0, 1, 2")
