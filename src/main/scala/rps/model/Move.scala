@@ -8,11 +8,3 @@ import io.buildo.enumero.{CaseEnumSerialization}
   Paper
   Scissors
 }
-
-object MoveHelpers {
-  implicit class ConversionHelper(x: String) {
-    def convertToMove(): Option[Move] = {
-      CaseEnumSerialization[Move].caseFromString(x)
-    }
-  }
-}

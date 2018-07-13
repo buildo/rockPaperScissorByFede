@@ -3,7 +3,7 @@ package rps
 import scala.util.Random
 
 import model._
-import Move._, Result._, MoveHelpers._
+import Move._, Result._
 import io.buildo.enumero.annotations.enum
 
 object Game {
@@ -15,21 +15,10 @@ object Game {
       case _ => Lost
     }
 
-  def play(userInput: String): ResponseBody = {
-    userInput.convertToMove match {
-      case Some(computerMove: Move) => {
-        val ourMove = Random.shuffle(List(Rock, Paper, Scissors)).head
-        val result = getGameResult(ourMove, computerMove)
+  def play(userMove: Move): GameSummary = {
+    val computerMove = Random.shuffle(List(Rock, Paper, Scissors)).head
+    val result = getGameResult(computerMove, userMove)
 
-        ResponseBody(Some(result), Some(computerMove), Some(ourMove), None)
-      }
-      case None => {
-        ResponseBody(
-          None,
-          None,
-          None,
-          Some("this move is not allowed. Allowed moves are 0, 1, 2"))
-      }
-    }
+    GameSummary(result, computerMove, userMove)
   }
 }
