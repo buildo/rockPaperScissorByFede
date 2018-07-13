@@ -11,42 +11,25 @@ import de.heikoseeberger.akkahttpcirce.ErrorAccumulatingCirceSupport._
 import io.circe.generic.auto._
 import io.buildo.enumero.circe._
 
+import wiro.Config
+import wiro.server.akkaHttp._
+
 import Directives._
 import StatusCodes._
 import model._
-import Game._
 import Result._
+import FailSupport._
 
-object Main extends App {
+object Main extends App with RouterDerivationModule {
+  implicit def throwableResponse: ToHttpResponse[Throwable] = null
   implicit val system = ActorSystem("my-system")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
-  implicit def myRejectionHandler =
-    RejectionHandler
-      .newBuilder()
-      .handleAll[MalformedRequestContentRejection] { rejection =>
-        complete((UnprocessableEntity, WrongMove()))
-      }
-      .handleNotFound { complete((NotFound, "Not here!")) }
-      .result()
 
-  val route =
-    post {
-      path("playGame") {
-        entity(as[GameRequest]) { body =>
-          complete(play(body.userMove))
-        }
-      }
-    } ~ options(complete())
+  val gameRouter = deriveRouter[GameApi](new GameApiImpl)
 
-  val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
-
-  println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
-
-  StdIn.readLine()
-
-  bindingFuture
-    .flatMap(_.unbind())
-    .onComplete(_ => system.terminate())
-
+  val rpcServer = new HttpRPCServer(
+    config = Config("localhost", 8080),
+    routers = List(gameRouter)
+  )
 }
