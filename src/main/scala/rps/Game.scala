@@ -16,7 +16,7 @@ object Game {
     }
 
   def play(userMove: Move): GameSummary = {
-    val computerMove = Random.shuffle(List(Rock, Paper, Scissors)).head
+    val computerMove = Random.shuffle(Move.values).head
     val result = getGameResult(computerMove, userMove)
 
     GameSummary(result, computerMove, userMove)

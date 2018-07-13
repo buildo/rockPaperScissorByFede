@@ -25,7 +25,7 @@ object Main extends App {
     RejectionHandler
       .newBuilder()
       .handleAll[MalformedRequestContentRejection] { rejection =>
-        complete(WrongMove())
+        complete((UnprocessableEntity, WrongMove()))
       }
       .handleNotFound { complete((NotFound, "Not here!")) }
       .result()
