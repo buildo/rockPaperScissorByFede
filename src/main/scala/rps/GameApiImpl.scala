@@ -1,12 +1,14 @@
 package rps
 
 import scala.util.Random
+import scala.concurrent.{ExecutionContext, Future}
+import wiro.server.akkaHttp.ToHttpResponse
+import io.buildo.enumero.annotations.enum
 
 import model._
 import Move._, Result._
-import io.buildo.enumero.annotations.enum
 
-object Game {
+class GameApiImpl(implicit ec: ExecutionContext) extends GameApi {
   def getGameResult(a: Move, b: Move): Result =
     (a, b) match {
       case (a, b) if a == b => Tie
@@ -21,4 +23,9 @@ object Game {
 
     GameSummary(result, computerMove, userMove)
   }
+
+  override def game(userMove: Move): Future[Either[Throwable, GameSummary]] =
+    Future {
+      Right(play(userMove))
+    }
 }
