@@ -5,10 +5,9 @@ import scala.util.Random
 import rps.model.{GameSummary, Move, Result}
 import Move._, Result._
 import rps.model.error._
-import rps.repository.{GameRepository}
-import GameRepository._
+import rps.repository.{InMemoryGameRepository}
 
-object GameService {
+case class GameService(implicit repo: InMemoryGameRepository) {
   def getGameResult(a: Move, b: Move): Result =
     (a, b) match {
       case (a, b) if a == b => Tie
@@ -21,6 +20,6 @@ object GameService {
     val computerMove = Random.shuffle(Move.values).head
     val result = getGameResult(computerMove, userMove)
 
-    summary.update(1, GameSummary(result, computerMove, userMove))
+    repo.updateGame(GameSummary(result, computerMove, userMove))
   }
 }

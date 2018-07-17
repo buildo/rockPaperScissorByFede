@@ -5,7 +5,6 @@ lazy val root = project
   .settings(
     name := "rock-paper-scissor",
     scalaVersion := "2.12.3",
-    resolvers += "Artima Maven Repository" at "http://repo.artima.com/releases",
     resolvers += Resolver.bintrayRepo("buildo", "maven"),
     resolvers += Resolver.bintrayRepo("hseeberger", "maven"),
     libraryDependencies ++= Seq(
@@ -20,7 +19,6 @@ lazy val root = project
       "com.typesafe.akka" %% "akka-stream" % "2.5.13",
       "de.heikoseeberger" %% "akka-http-circe" % "1.21.0",
       "org.slf4j" % "slf4j-nop" % "1.6.4",
-      "org.scalactic" %% "scalactic" % "3.0.5",
       "org.scalatest" %% "scalatest" % "3.0.5" % "test"
     ),
     addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full)
