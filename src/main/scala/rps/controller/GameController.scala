@@ -24,9 +24,7 @@ trait GameApi {
 case class GameApiImpl(
   service: GameService
 )(
-  implicit
-  ec: ExecutionContext,
-  repo: GameRepository
+  implicit ec: ExecutionContext
 ) extends GameApi {
   override def play(userMove: Move): Future[Either[Throwable, Unit]] =
     Future {

@@ -36,9 +36,11 @@ object Main extends App with RouterDerivationModule {
   implicit val system = ActorSystem("my-system")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
-  implicit val gameRepository: GameRepository = InMemoryGameRepository()
 
-  val gameRouter = deriveRouter[GameApi](GameApiImpl(GameServiceImpl()))
+  val gameRepository = InMemoryGameRepository()
+  val gameService = GameServiceImpl(gameRepository)
+
+  val gameRouter = deriveRouter[GameApi](GameApiImpl(gameService))
 
   val rpcServer = new HttpRPCServer(
     config = Config("localhost", 8080),

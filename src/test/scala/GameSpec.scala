@@ -6,7 +6,7 @@ import org.scalatest._
 
 class GameSpec extends FlatSpec {
   implicit val repo = InMemoryGameRepository()
-  private val gameService = GameServiceImpl()
+  private val gameService = GameServiceImpl(repo)
 
   "The client" should "win when a winning combo is evaluated" in {
     assert(gameService.getGameResult(Scissors, Rock) === Won)

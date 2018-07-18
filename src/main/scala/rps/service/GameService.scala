@@ -12,7 +12,7 @@ trait GameService {
   def getGame(): Option[GameSummary];
 }
 
-case class GameServiceImpl(implicit repo: GameRepository) extends GameService {
+case class GameServiceImpl(repo: GameRepository) extends GameService {
   def getGameResult(a: Move, b: Move): Result =
     (a, b) match {
       case (a, b) if a == b => Tie
