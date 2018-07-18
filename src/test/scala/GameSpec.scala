@@ -1,4 +1,4 @@
-import rps.service.{GameService}
+import rps.service.{GameServiceImpl}
 import rps.repository.{InMemoryGameRepository}
 import rps.model.{Move, Result}
 import Move._, Result._
@@ -6,7 +6,7 @@ import org.scalatest._
 
 class GameSpec extends FlatSpec {
   implicit val repo = InMemoryGameRepository()
-  private val gameService = GameService()
+  private val gameService = GameServiceImpl()
 
   "The client" should "win when a winning combo is evaluated" in {
     assert(gameService.getGameResult(Scissors, Rock) === Won)

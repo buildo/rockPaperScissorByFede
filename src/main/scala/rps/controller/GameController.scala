@@ -1,4 +1,4 @@
-package rps.controller.GameController
+package rps.controller
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -6,7 +6,7 @@ import rps.model.{GameSummary, Move, Result}
 import Move._, Result._
 import rps.model.error._
 import rps.service.{GameService}
-import rps.repository.{InMemoryGameRepository}
+import rps.repository.{GameRepository}
 
 import wiro.annotation._
 
@@ -17,13 +17,17 @@ trait GameApi {
 
   @command
   def play(
-      userMove: Move
+    userMove: Move
   ): Future[Either[Throwable, Unit]]
 }
 
-class GameApiImpl(implicit ec: ExecutionContext, repo: InMemoryGameRepository) extends GameApi {
-  private val service = GameService()
-
+case class GameApiImpl(
+  service: GameService
+)(
+  implicit
+  ec: ExecutionContext,
+  repo: GameRepository
+) extends GameApi {
   override def play(userMove: Move): Future[Either[Throwable, Unit]] =
     Future {
       Right(service.playGame(userMove))
@@ -31,7 +35,7 @@ class GameApiImpl(implicit ec: ExecutionContext, repo: InMemoryGameRepository) e
 
   override def result(): Future[Either[NoGameInMemory, GameSummary]] =
     Future {
-      repo.getGame() match {
+      service.getGame() match {
         case None              => Left(NoGameInMemory())
         case Some(gameSummary) => Right(gameSummary)
       }

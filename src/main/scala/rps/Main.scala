@@ -21,8 +21,9 @@ import Result._
 import FailSupport._
 
 import rps.model.error._
-import rps.controller.{GameController}
-import rps.repository.{InMemoryGameRepository}
+import rps.controller._
+import rps.service.{GameServiceImpl}
+import rps.repository.{GameRepository, InMemoryGameRepository}
 
 object Main extends App with RouterDerivationModule {
   implicit def noGameResponse: ToHttpResponse[NoGameInMemory] =
@@ -35,9 +36,9 @@ object Main extends App with RouterDerivationModule {
   implicit val system = ActorSystem("my-system")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
-  implicit val gameRepository = InMemoryGameRepository()
+  implicit val gameRepository: GameRepository = InMemoryGameRepository()
 
-  val gameRouter = deriveRouter[GameController.GameApi](new GameController.GameApiImpl)
+  val gameRouter = deriveRouter[GameApi](GameApiImpl(GameServiceImpl()))
 
   val rpcServer = new HttpRPCServer(
     config = Config("localhost", 8080),
