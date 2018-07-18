@@ -20,13 +20,27 @@ import model._
 import Result._
 import FailSupport._
 
+import rps.model.error._
+import rps.controller._
+import rps.service.{GameServiceImpl}
+import rps.repository.{GameRepository, InMemoryGameRepository}
+
 object Main extends App with RouterDerivationModule {
+  implicit def noGameResponse: ToHttpResponse[NoGameInMemory] =
+    (error: NoGameInMemory) =>
+      HttpResponse(
+        status = NotFound,
+        entity = error.message
+    )
   implicit def throwableResponse: ToHttpResponse[Throwable] = null
   implicit val system = ActorSystem("my-system")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
-  val gameRouter = deriveRouter[GameApi](new GameApiImpl)
+  val gameRepository = InMemoryGameRepository()
+  val gameService = GameServiceImpl(gameRepository)
+
+  val gameRouter = deriveRouter[GameApi](GameApiImpl(gameService))
 
   val rpcServer = new HttpRPCServer(
     config = Config("localhost", 8080),

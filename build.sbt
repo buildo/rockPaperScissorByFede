@@ -18,8 +18,8 @@ lazy val root = project
       "com.typesafe.akka" %% "akka-http" % "10.1.3",
       "com.typesafe.akka" %% "akka-stream" % "2.5.13",
       "de.heikoseeberger" %% "akka-http-circe" % "1.21.0",
-      "org.slf4j" % "slf4j-nop" % "1.6.4"
+      "org.slf4j" % "slf4j-nop" % "1.6.4",
+      "org.scalatest" %% "scalatest" % "3.0.5" % "test"
     ),
-    addCompilerPlugin(
-      "org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full)
+    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full)
   )
